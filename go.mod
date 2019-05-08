@@ -21,6 +21,7 @@ require (
 	github.com/onsi/gomega v1.3.0
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/stretchr/testify v1.3.0 // indirect
+	github.com/tanishiking/aws-lambda-go-api-proxy v0.3.0
 	github.com/ugorji/go v0.0.0-20180129160544-d2b24cf3d3b4
 	github.com/urfave/negroni v0.0.0-20180130044549-22c5532ea862
 	golang.org/x/net v0.0.0-20190311183353-d8887717615a
