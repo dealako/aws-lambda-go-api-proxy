@@ -3,11 +3,11 @@ package httpadapter_test
 import (
 	"context"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
-	"github.com/awslabs/aws-lambda-go-api-proxy/httpadapter"
+	"github.com/dealako/aws-lambda-go-api-proxy/httpadapter"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

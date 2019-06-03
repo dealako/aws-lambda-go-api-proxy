@@ -3,11 +3,11 @@ package negroniadapter_test
 import (
 	"context"
 	"fmt"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
-	negroniadapter "github.com/awslabs/aws-lambda-go-api-proxy/negroni"
+	negroniadapter "github.com/dealako/aws-lambda-go-api-proxy/negroni"
 	"github.com/urfave/negroni"
 
 	. "github.com/onsi/ginkgo"
@@ -17,7 +17,7 @@ import (
 var _ = Describe("NegroniAdapter tests", func() {
 	Context("Tests multiple handlers", func() {
 		It("Proxies the event correctly", func() {
-			log.Println("Starting test")
+			log.Info("Starting test")
 
 			homeHandler := func(w http.ResponseWriter, req *http.Request) {
 				w.Header().Add("unfortunately-required-header", "")

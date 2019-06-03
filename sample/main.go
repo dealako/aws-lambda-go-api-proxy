@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
 

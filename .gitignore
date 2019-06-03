@@ -12,6 +12,8 @@
 *.out
 
 .vscode
+*.iml
+.idea/
 vendor/*/
 gin/aws-lambda-go-api-proxy-gin
 core/aws-lambda-go-api-proxy-core
