@@ -156,28 +156,38 @@ func (r *RequestAccessor) EventToRequest(req events.APIGatewayProxyRequest) (*ht
 	path = serverAddress + path
 
 	if len(req.MultiValueQueryStringParameters) > 0 {
+		log.Printf("Request MultiValueQueryString has %d items", len(req.MultiValueQueryStringParameters))
 		queryString := ""
 		for q, l := range req.MultiValueQueryStringParameters {
+			log.Printf("Request MultiValueQueryString processing key: %s, value (array of strings): %v", q, l)
 			for _, v := range l {
 				if queryString != "" {
 					queryString += "&"
 				}
+				log.Printf("Request MultiValueQueryString query string key: (%s/%s), value: (%s/%s)",
+					q, url.QueryEscape(q), v, url.QueryEscape(v))
 				queryString += url.QueryEscape(q) + "=" + url.QueryEscape(v)
+				log.Printf("Request MultiValueQueryString query string now: %s", queryString)
 			}
 		}
 		path += "?" + queryString
 	} else if len(req.QueryStringParameters) > 0 {
 		// Support `QueryStringParameters` for backward compatibility.
 		// https://github.com/awslabs/aws-lambda-go-api-proxy/issues/37
+		log.Printf("Request QueryString has %d items", len(req.QueryStringParameters))
 		queryString := ""
 		for q := range req.QueryStringParameters {
 			if queryString != "" {
 				queryString += "&"
 			}
+			log.Printf("Request QueryString query string key: (%s/%s), value: (%s/%s)",
+				q, url.QueryEscape(q), req.QueryStringParameters[q], url.QueryEscape(req.QueryStringParameters[q]))
 			queryString += url.QueryEscape(q) + "=" + url.QueryEscape(req.QueryStringParameters[q])
+			log.Printf("Request QueryString query string now: %s", queryString)
 		}
 		path += "?" + queryString
 	}
+	log.Printf("Request path: %s", path)
 
 	httpRequest, err := http.NewRequest(
 		strings.ToUpper(req.HTTPMethod),
