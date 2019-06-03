@@ -8,14 +8,13 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambdacontext"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
-
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambdacontext"
-	log "github.com/sirupsen/logrus"
 )
 
 // CustomHostVariable is the name of the environment variable that contains
