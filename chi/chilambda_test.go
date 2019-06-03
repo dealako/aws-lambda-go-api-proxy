@@ -2,11 +2,11 @@ package chiadapter_test
 
 import (
 	"context"
-	"log"
+	log "github.com/sirupsen/logrus"
 	"net/http"
 
 	"github.com/aws/aws-lambda-go/events"
-	chiadapter "github.com/awslabs/aws-lambda-go-api-proxy/chi"
+	chiadapter "github.com/dealako/aws-lambda-go-api-proxy/chi"
 	"github.com/go-chi/chi"
 
 	. "github.com/onsi/ginkgo"
@@ -16,7 +16,7 @@ import (
 var _ = Describe("ChiLambda tests", func() {
 	Context("Simple ping request", func() {
 		It("Proxies the event correctly", func() {
-			log.Println("Starting test")
+			log.Info("Starting test")
 
 			r := chi.NewRouter()
 			r.Get("/ping", func(w http.ResponseWriter, r *http.Request) {

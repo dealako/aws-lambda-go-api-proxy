@@ -8,8 +8,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -17,6 +15,7 @@ import (
 
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambdacontext"
+	log "github.com/sirupsen/logrus"
 )
 
 // CustomHostVariable is the name of the environment variable that contains
@@ -55,8 +54,8 @@ func (r *RequestAccessor) GetAPIGatewayContext(req *http.Request) (events.APIGat
 	context := events.APIGatewayProxyRequestContext{}
 	err := json.Unmarshal([]byte(req.Header.Get(APIGwContextHeader)), &context)
 	if err != nil {
-		log.Println("Erorr while unmarshalling context")
-		log.Println(err)
+		log.Warn("Erorr while unmarshalling context")
+		log.Warn(err)
 		return events.APIGatewayProxyRequestContext{}, err
 	}
 	return context, nil
@@ -73,8 +72,8 @@ func (r *RequestAccessor) GetAPIGatewayStageVars(req *http.Request) (map[string]
 	}
 	err := json.Unmarshal([]byte(req.Header.Get(APIGwStageVarsHeader)), &stageVars)
 	if err != nil {
-		log.Println("Erorr while unmarshalling stage variables")
-		log.Println(err)
+		log.Warn("Erorr while unmarshalling stage variables")
+		log.Warn(err)
 		return stageVars, err
 	}
 	return stageVars, nil
@@ -156,38 +155,38 @@ func (r *RequestAccessor) EventToRequest(req events.APIGatewayProxyRequest) (*ht
 	path = serverAddress + path
 
 	if len(req.MultiValueQueryStringParameters) > 0 {
-		log.Printf("Request MultiValueQueryString has %d items", len(req.MultiValueQueryStringParameters))
+		log.Debugf("Request MultiValueQueryString has %d items", len(req.MultiValueQueryStringParameters))
 		queryString := ""
 		for q, l := range req.MultiValueQueryStringParameters {
-			log.Printf("Request MultiValueQueryString processing key: %s, value (array of strings): %v", q, l)
+			log.Debugf("Request MultiValueQueryString processing key: %s, value (array of strings): %v", q, l)
 			for _, v := range l {
 				if queryString != "" {
 					queryString += "&"
 				}
-				log.Printf("Request MultiValueQueryString query string key: (%s/%s), value: (%s/%s)",
+				log.Debugf("Request MultiValueQueryString query string key: (%s/%s), value: (%s/%s)",
 					q, url.QueryEscape(q), v, url.QueryEscape(v))
 				queryString += url.QueryEscape(q) + "=" + url.QueryEscape(v)
-				log.Printf("Request MultiValueQueryString query string now: %s", queryString)
+				log.Debugf("Request MultiValueQueryString query string now: %s", queryString)
 			}
 		}
 		path += "?" + queryString
 	} else if len(req.QueryStringParameters) > 0 {
 		// Support `QueryStringParameters` for backward compatibility.
 		// https://github.com/awslabs/aws-lambda-go-api-proxy/issues/37
-		log.Printf("Request QueryString has %d items", len(req.QueryStringParameters))
+		log.Debugf("Request QueryString has %d items", len(req.QueryStringParameters))
 		queryString := ""
 		for q := range req.QueryStringParameters {
 			if queryString != "" {
 				queryString += "&"
 			}
-			log.Printf("Request QueryString query string key: (%s/%s), value: (%s/%s)",
+			log.Debugf("Request QueryString query string key: (%s/%s), value: (%s/%s)",
 				q, url.QueryEscape(q), req.QueryStringParameters[q], url.QueryEscape(req.QueryStringParameters[q]))
 			queryString += url.QueryEscape(q) + "=" + url.QueryEscape(req.QueryStringParameters[q])
-			log.Printf("Request QueryString query string now: %s", queryString)
+			log.Debugf("Request QueryString query string now: %s", queryString)
 		}
 		path += "?" + queryString
 	}
-	log.Printf("Request path: %s", path)
+	log.Debugf("Request path: %s", path)
 
 	httpRequest, err := http.NewRequest(
 		strings.ToUpper(req.HTTPMethod),
@@ -196,8 +195,8 @@ func (r *RequestAccessor) EventToRequest(req events.APIGatewayProxyRequest) (*ht
 	)
 
 	if err != nil {
-		fmt.Printf("Could not convert request %s:%s to http.Request\n", req.HTTPMethod, req.Path)
-		log.Println(err)
+		log.Warnf("Could not convert request %s:%s to http.Request\n", req.HTTPMethod, req.Path)
+		log.Warn(err)
 		return nil, err
 	}
 	for h := range req.Headers {

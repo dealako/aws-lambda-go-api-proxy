@@ -2,10 +2,10 @@ package ginadapter_test
 
 import (
 	"context"
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/aws/aws-lambda-go/events"
-	ginadapter "github.com/awslabs/aws-lambda-go-api-proxy/gin"
+	ginadapter "github.com/dealako/aws-lambda-go-api-proxy/gin"
 	"github.com/gin-gonic/gin"
 
 	. "github.com/onsi/ginkgo"
@@ -15,10 +15,10 @@ import (
 var _ = Describe("GinLambda tests", func() {
 	Context("Simple ping request", func() {
 		It("Proxies the event correctly", func() {
-			log.Println("Starting test")
+			log.Info("Starting test")
 			r := gin.Default()
 			r.GET("/ping", func(c *gin.Context) {
-				log.Println("Handler!!")
+				log.Info("Handler!!")
 				c.JSON(200, gin.H{
 					"message": "pong",
 				})
