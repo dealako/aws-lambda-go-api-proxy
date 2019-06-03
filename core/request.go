@@ -154,38 +154,38 @@ func (r *RequestAccessor) EventToRequest(req events.APIGatewayProxyRequest) (*ht
 	path = serverAddress + path
 
 	if len(req.MultiValueQueryStringParameters) > 0 {
-		log.Debugf("Request MultiValueQueryString has %d items", len(req.MultiValueQueryStringParameters))
+		log.Warnf("Request MultiValueQueryString has %d items", len(req.MultiValueQueryStringParameters))
 		queryString := ""
 		for q, l := range req.MultiValueQueryStringParameters {
-			log.Debugf("Request MultiValueQueryString processing key: %s, value (array of strings): %v", q, l)
+			log.Warnf("Request MultiValueQueryString processing key: %s, value (array of strings): %v", q, l)
 			for _, v := range l {
 				if queryString != "" {
 					queryString += "&"
 				}
-				log.Debugf("Request MultiValueQueryString query string key: (%s/%s), value: (%s/%s)",
+				log.Warnf("Request MultiValueQueryString query string key: (%s/%s), value: (%s/%s)",
 					q, url.QueryEscape(q), v, url.QueryEscape(v))
 				queryString += url.QueryEscape(q) + "=" + url.QueryEscape(v)
-				log.Debugf("Request MultiValueQueryString query string now: %s", queryString)
+				log.Warnf("Request MultiValueQueryString query string now: %s", queryString)
 			}
 		}
 		path += "?" + queryString
 	} else if len(req.QueryStringParameters) > 0 {
 		// Support `QueryStringParameters` for backward compatibility.
 		// https://github.com/awslabs/aws-lambda-go-api-proxy/issues/37
-		log.Debugf("Request QueryString has %d items", len(req.QueryStringParameters))
+		log.Warnf("Request QueryString has %d items", len(req.QueryStringParameters))
 		queryString := ""
 		for q := range req.QueryStringParameters {
 			if queryString != "" {
 				queryString += "&"
 			}
-			log.Debugf("Request QueryString query string key: (%s/%s), value: (%s/%s)",
+			log.Warnf("Request QueryString query string key: (%s/%s), value: (%s/%s)",
 				q, url.QueryEscape(q), req.QueryStringParameters[q], url.QueryEscape(req.QueryStringParameters[q]))
 			queryString += url.QueryEscape(q) + "=" + url.QueryEscape(req.QueryStringParameters[q])
-			log.Debugf("Request QueryString query string now: %s", queryString)
+			log.Warnf("Request QueryString query string now: %s", queryString)
 		}
 		path += "?" + queryString
 	}
-	log.Debugf("Request path: %s", path)
+	log.Warnf("Request path: %s", path)
 
 	httpRequest, err := http.NewRequest(
 		strings.ToUpper(req.HTTPMethod),
